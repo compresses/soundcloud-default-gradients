@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>yuh</title>
+<style>
+.sc-artwork {
+            background-size: cover;
+            background-position: 50% 50%;
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+        }
+.sc-artwork{
+    cursor: pointer;
+}
+ul{list-style-type:none}
+body{background:#101010}
+input{padding: 16px;background: #0202028f;border: 2px solid #656560ee;color: #fff;border-radius: 4px;outline: none;margin: 16px;font:calc(0.4em + 1vmin) monospace;}
+</style>
+</head>
+<body>
+    <ul id="gradientList" style="display:flex;flex-direction: row;flex-wrap: wrap;justify-content: center;">
+    </ul>
+    <div style="
+    display: flex;
+    justify-content: center;
+">
+    <input type="number" id="width"" placeholder="width" value="3000">
+    <input type="number" id="height" placeholder="height" value="3000"  >
+</div>
+
+    <script>
+        var gradients = [
+            { startColor: "#846170", endColor: "#70929c" },
+            { startColor: "#846170", endColor: "#e6846e" },
+            { startColor: "#846170", endColor: "#8e8485" },
+            { startColor: "#70929c", endColor: "#846170" },
+            { startColor: "#70929c", endColor: "#e6846e" },
+            { startColor: "#70929c", endColor: "#8e8485" },
+            { startColor: "#e6846e", endColor: "#846170" },
+            { startColor: "#e6846e", endColor: "#70929c" },
+            { startColor: "#e6846e", endColor: "#8e8485" },
+            { startColor: "#8e8485", endColor: "#846170" },
+            { startColor: "#8e8485", endColor: "#70929c" },
+            { startColor: "#8e8485", endColor: "#e6846e" }
+        ];
+
+        var gradientList = document.getElementById("gradientList");
+
+        for (var i = 0; i < gradients.length; i++) {
+            var listItem = document.createElement("li");
+
+            var span = document.createElement("div");
+            span.classList.add('sc-artwork');
+            console.log(`linear-gradient(135dg, ${gradients[i].startColor}, ${gradients[i].endColor})`);
+            span.style.backgroundImage = `linear-gradient(135deg, ${gradients[i].startColor}, ${gradients[i].endColor})`;
+            span.classList.add("downloadButton");
+            listItem.appendChild(span);
+
+            gradientList.appendChild(listItem);
+        }
+
+        var downloadButtons = document.getElementsByClassName("downloadButton");
+
+        for (var i = 0; i < downloadButtons.length; i++) {
+            (function(index) {
+                downloadButtons[index].addEventListener("click", function() {
+                    downloadGradient(gradients[index].startColor, gradients[index].endColor);
+                });
+            })(i);
+        }
+
+        function downloadGradient(startColor, endColor) {
+            var canvas = document.createElement("canvas");
+            canvas.width = parseInt(document.getElementById('width').value);
+            canvas.height = parseInt(document.getElementById('height').value);
+            var ctx = canvas.getContext("2d");
+
+            var gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, startColor);
+            gradient.addColorStop(1, endColor);
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            var dataURL = canvas.toDataURL("image/png");
+
+            var link = document.createElement("a");
+            link.href = dataURL;
+            link.download = `gradient(${startColor}, ${endColor}).png`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
